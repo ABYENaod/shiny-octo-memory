@@ -1,0 +1,139 @@
+import java.sql.*;
+import java.util.*;
+
+public class SQL {
+	
+	public LinkedList<String> RechercheGenre (String Genre1, String Genre2, String Genre3) {
+	
+		Connection conn = null;
+		LinkedList<String> film = new LinkedList<>();
+		String url = "jdbc:mariadb://fimi-bd-srv1.insa-lyon.fr/G31BD_16" ;
+		String user = "G31_16";
+		String pwd = "G31_16";
+		
+		try {         
+			//Enregistrement de la classe du driver par le driverManager
+			Class.forName("org.mariadb.jdbc.Driver");
+			System.out.println("Driver trouve...");
+			//Creation d'une connexion à la base de donnees
+			conn = DriverManager.getConnection(url, user, pwd);
+			System.out.println("Connexion etablie...");
+			System.out.println("");
+		} catch(Exception e){
+			//Affiche le message d'erreur si une errurd produit durant la connexion
+			System.out.println(e.getMessage());
+			System.exit(0);
+		}
+        
+		try {   
+			
+            String G1 = "\"%" + Genre1 + "%\"";
+            
+//Creation de la requete sans rating         
+            /*String sqlStr = "SELECT a.title FROM movies a WHERE a.genres LIKE " + G1;
+            
+            //si genre 2 n'est pas nul alors ajouter ca recherche a la comande SQL
+            if (Genre2 != ""){
+				String G2 = "\"%" + Genre2 + "%\"";
+				sqlStr = sqlStr + " AND a.genres LIKE " + G2;
+			}
+
+			//si genre 3 n'est pas nul alors ajouter ca recherche a la comande SQL
+			if (Genre3 != ""){
+				String G3 = "\"%" + Genre3 + "%\"";
+				sqlStr = sqlStr + " AND a.genres LIKE " + G3;
+
+			}*/
+// fin de recherche sans rating
+//Creation de la requete avec rating
+
+			String sqlStr = "SELECT a.title , AVG (b.rating) FROM movies a, ratings b, links c, tags d WHERE a.movieId = b.movieId AND b.movieId = c.movieId AND c.movieId = d.movieId AND a.genres LIKE " + G1;
+			  
+			//si genre 2 n'est pas nul alors ajouter ca recherche a la comande SQL
+			if (Genre2 != ""){
+				String G2 = "\"%" + Genre2 + "%\"";
+				sqlStr = sqlStr + " AND a.genres LIKE " + G2;
+			}
+			//si genre 3 n'est pas nul alors ajouter ca recherche a la comande SQL
+			if (Genre3 != ""){
+				String G3 = "\"%" + Genre3 + "%\"";
+				sqlStr = sqlStr + " AND a.genres LIKE " + G3;
+			}
+// fin de recherche avec rating				
+			sqlStr = sqlStr + " GROUP BY b.movieId ORDER BY AVG (b.rating) DESC;";		
+			Statement stmt = conn.createStatement();
+            
+			//execution de la requete
+			ResultSet res = stmt.executeQuery(sqlStr);
+			// resultat
+			int i = 0;
+			while (res.next() && i < 50) {
+				String titre = res.getString(1);
+				film.add(titre);
+				i++;
+				}
+			
+			}
+		catch(Exception e){
+			//si une erreur se produit, affichage du message correspondant
+			System.out.println(e.getMessage());
+			System.exit(0);
+			}
+		return film;
+		}
+            
+public LinkedList<String> RechercheTitre(String Titre) {
+			
+			Connection conn = null;
+			LinkedList<String> film= new LinkedList<>();
+			String url = "jdbc:mariadb://fimi-bd-srv1.insa-lyon.fr/G31BD_16" ;
+			String user = "G31_16";
+			String pwd = "G31_16";
+	
+			try {         
+				//Enregistrement de la classe du driver par le driverManager
+				Class.forName("org.mariadb.jdbc.Driver");
+				System.out.println("Driver trouve...");
+				//Creation d'une connexion à la base de donnees
+				conn = DriverManager.getConnection(url, user, pwd);
+				System.out.println("Connexion etablie...");
+				System.out.println("");
+			} catch(Exception e){
+				//Affiche le message d'erreur si une erreur se produit durant la connexion
+				System.out.println(e.getMessage());
+				System.exit(0);
+			}
+       
+			try {   
+	
+           
+				String T =  "'%" + Titre + "%'";
+//Creation de la requete sans rating
+				String sqlStr = "SELECT a.title FROM movies a WHERE a.title LIKE " + T; // commande modifiée pour bypass le rating
+//Fin de la requete sans rating
+//Creation de la requete avec rating
+				//String sqlStr = "SELECT a.title , AVG (b.rating) FROM movies a, ratings b, links c, tags d WHERE a.movieId = b.movieId AND b.movieId = c.movieId AND c.movieId = d.movieId AND a.title LIKE " + T  + "GROUP BY b.movieId ORDER BY AVG (b.rating) DESC;";
+//Fin de la requete avec rating
+				
+				Statement stmt = conn.createStatement();
+           
+				//execution de la requete
+				ResultSet res = stmt.executeQuery(sqlStr);
+				// résultat
+				int j = 0;
+				while (res.next() && j<50) {
+					String titre = res.getString(1);
+					film.add(titre);
+					j++;
+					}
+				}
+				catch(Exception e){
+				//si une erreur se produit, affichage du message correspondant
+				System.out.println(e.getMessage());
+				System.exit(0);
+				}
+				return film;
+	}
+}
+
+
