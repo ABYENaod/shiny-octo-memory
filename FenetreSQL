@@ -1,0 +1,150 @@
+import java.awt.*;
+import javax.swing.*;
+import java.util.*;
+
+public class FenetreSQL extends JFrame {
+	public LinkedList<String> film = new LinkedList<>();
+	
+	//pour saisir titre
+	private JLabel Titre1;
+	private JTextField Titre11;
+	
+	//pour saisir Genre 1
+	private JLabel Genre1;
+	private JTextField Genre11;
+	
+	//pour saisir genre 2
+	private JLabel Genre2;
+	private JTextField Genre22;
+	
+	//pour saisir genre 3
+	private JLabel Genre3;
+	private JTextField Genre33;
+
+    //Declaration bouton valider
+	private JButton BoutonValiderTitre;
+	
+	//Declaration bouton valider
+	private JButton BoutonValiderGenre;
+    
+    //Création zone central pour bouton
+    private JPanel aireResultat;
+	
+	
+//	private JAreaText description;  prevision de la zone de texte au milieu
+
+    public FenetreSQL(int lg, int larg) {
+
+        super("Recherche Film - Soirée repos");
+        this.setSize(lg,larg);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        JPanel conteneurPrincipal = new JPanel(new BorderLayout());
+        this.add(conteneurPrincipal);
+
+
+//Partie texte haute
+		
+		Titre1 = new JLabel (" Titre : ");
+		Titre11 = new JTextField ("",18);
+		
+		Genre1 = new JLabel (" Genre 1 : ");
+        Genre11 = new JTextField ("",14);
+        
+        Genre2 = new JLabel (" Genre 2 : ");
+        Genre22 = new JTextField ("",14);
+        
+        Genre3 = new JLabel (" Genre 3 : ");
+        Genre33 = new JTextField ("",14);
+        
+        BoutonValiderTitre = new JButton (" Valider la recherche par titre ");
+        
+        BoutonValiderGenre = new JButton (" Valider la recherche par genre ");
+        
+        // version mettre bouton dans jPanel
+        aireResultat = new JPanel () ;
+        
+        
+        JPanel Haut1 = new JPanel();
+        Haut1.setBackground(Color.GRAY);
+        Haut1.add(Titre1);
+        Haut1.add(Titre11);
+        Haut1.add(BoutonValiderTitre);
+        
+        JPanel Haut2 = new JPanel();
+        Haut2.setBackground(Color.GRAY);
+        Haut2.add(Genre1);
+        Haut2.add(Genre11);
+        Haut2.add(Genre2);
+        Haut2.add(Genre22);
+        Haut2.add(Genre3);
+        Haut2.add(Genre33);
+        Haut2.add(BoutonValiderGenre);
+        
+        JPanel Gauche = new JPanel();
+        Gauche.setPreferredSize(new Dimension(55, 480)); //adapter taille panneau gauche
+        Gauche.setBackground(Color.GRAY);
+        
+        JPanel Droite = new JPanel();
+        Droite.setPreferredSize(new Dimension(55, 480)); //adapter taille panneau droit
+        Droite.setBackground(Color.GRAY);
+        
+        JPanel Haut = new JPanel(new BorderLayout());	
+        Haut.setPreferredSize(new Dimension(1400, 65)); //adapter taille panneau haut
+        Haut.setBackground(Color.GRAY);
+        Haut.add(Haut1,BorderLayout.NORTH);
+        Haut.add(Haut2,BorderLayout.SOUTH);
+        
+        JPanel Bas = new JPanel();
+        Bas.setPreferredSize(new Dimension(1400, 55)); //adapter taille panneau bas
+        Bas.setBackground(Color.GRAY);
+        
+        
+		JPanel cadrePrincipal = new JPanel (new BorderLayout());
+        cadrePrincipal.add(Haut,BorderLayout.NORTH);
+        cadrePrincipal.add(Gauche,BorderLayout.EAST);
+        cadrePrincipal.add(Droite,BorderLayout.WEST);
+        cadrePrincipal.add(Bas,BorderLayout.SOUTH);
+        cadrePrincipal.add(aireResultat,BorderLayout.CENTER);
+       
+		add(cadrePrincipal);
+        
+//METTRE LIAISON BOUTON / ECOUTEUR
+        BoutonValiderTitre.addActionListener(new EcouteurClicValiderTitre(this));
+        BoutonValiderGenre.addActionListener(new EcouteurClicValiderGenre(this));
+
+//Rendre la fenêtre visible
+        this.setVisible(true);
+    }
+    
+ //Création des getteurs
+    public String getTitre(){
+		return Titre11.getText();
+	}
+	
+    public String getGenre1(){
+		return Genre11.getText();
+	}
+	
+	public String getGenre2(){
+		return Genre22.getText();
+	}
+	
+	public String getGenre3(){
+		return Genre33.getText();
+	}
+   
+	
+// Affichage des resultats sous forme de bouton a partir d'une liste créé dans la partie film
+ 
+   public void afficheResultat(){
+		aireResultat.removeAll();
+        for (int i =0; i<film.size(); i++){
+			String a = film.get(i);
+			JButton b = new JButton(a); //peux etre virer 
+			aireResultat.add(b);
+		}
+		aireResultat.validate();
+		aireResultat.repaint();
+    }
+}
