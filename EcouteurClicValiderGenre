@@ -1,0 +1,15 @@
+import java.awt.event.*;
+
+public class EcouteurClicValiderGenre implements ActionListener {
+    private FenetreSQL fen ;
+    private SQL s = new SQL();
+
+    public EcouteurClicValiderGenre(FenetreSQL fen){
+        this.fen=fen;
+    }
+
+    public void actionPerformed(ActionEvent genre){
+        fen.film = s.RechercheGenre(fen.getGenre1(),fen.getGenre2(),fen.getGenre3());
+        fen.afficheResultat();
+    }
+}
