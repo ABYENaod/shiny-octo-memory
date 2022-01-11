@@ -1,0 +1,6 @@
+public class TestFenetre {
+	
+    public static void main(String[] args){
+        FenetreSQL f = new FenetreSQL(1400,800);
+    }
+}
